@@ -34,7 +34,7 @@ const User = {
         if (err) {
           reject(err);
         } else {
-          resolve({ id: result.insertId, name, email, role });
+          resolve({ id: result.insertId, name, email, role }); // added role to returned object
         }
       });
     });
