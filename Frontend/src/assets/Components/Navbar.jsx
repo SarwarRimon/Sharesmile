@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-700 text-white shadow-md fixed w-full z-50">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        <h1 className="text-3xl font-bold">Helping Hands</h1>
+        <h1 className="text-3xl font-bold">ShareSmaile</h1>
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'X' : '☰'}
         </button>
@@ -43,17 +43,22 @@ const Navbar = () => {
             <NavLink to="/contact" onClick={handleLinkClick}>Contact</NavLink>
           </li>
 
-          {/* Show Admin Panel for admin users */}
+          {/* Show Profile based on user role */}
           {isAuthenticated && userRole === 'admin' && (
             <li>
-              <NavLink to="/admin-dashboard" onClick={handleLinkClick}>Admin Panel</NavLink>
+              <NavLink to="/admin-dashboard" onClick={handleLinkClick}>Profile</NavLink>
             </li>
           )}
 
-          {/* Dashboard for regular users */}
-          {isAuthenticated && userRole === 'user' && (
+          {isAuthenticated && userRole === 'donor' && (
             <li>
-              <NavLink to="/dashboard" onClick={handleLinkClick}>Dashboard</NavLink>
+              <NavLink to="/dashboard" onClick={handleLinkClick}>Profile</NavLink>
+            </li>
+          )}
+
+          {isAuthenticated && userRole === 'helpseeker' && (
+            <li>
+              <NavLink to="/profile" onClick={handleLinkClick}>Profile</NavLink>
             </li>
           )}
 

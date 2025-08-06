@@ -9,10 +9,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      amount: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       paymentMethod: {
         type: Sequelize.STRING,
         allowNull: false,

@@ -5,8 +5,6 @@ const HelpSeekerDashboard = () => {
   const [user, setUser] = useState({});
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // You may store the token in localStorage after login
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -31,52 +29,59 @@ const HelpSeekerDashboard = () => {
     fetchData();
   }, [token]);
 
-  if (loading) return <p className="text-center text-lg mt-10">Loading...</p>;
+  if (loading) return <p className="text-center text-xl mt-16 text-gray-600">Loading your dashboard...</p>;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">HelpSeeker Dashboard</h1>
+    <div className="p-8 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-blue-700 mb-8">Welcome, {user.full_name || 'Help Seeker'} 👋</h1>
 
-      <div className="bg-white shadow rounded-lg p-4 mb-6">
-        <h2 className="text-xl font-semibold mb-2">Profile Information</h2>
-        <p><span className="font-medium">Full Name:</span> {user.full_name}</p>
-        <p><span className="font-medium">Email:</span> {user.email}</p>
-        <p><span className="font-medium">Mobile:</span> {user.mobile}</p>
-        <p><span className="font-medium">Address:</span> {user.address}</p>
+      {/* Profile Section */}
+      <div className="bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">📋 Profile Information</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+          <p><span className="font-medium text-gray-900">Full Name:</span> {user.full_name}</p>
+          <p><span className="font-medium text-gray-900">Email:</span> {user.email}</p>
+          <p><span className="font-medium text-gray-900">Mobile:</span> {user.mobile}</p>
+          <p><span className="font-medium text-gray-900">Address:</span> {user.address}</p>
+        </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-4">
-        <h2 className="text-xl font-semibold mb-4">My Help Requests</h2>
+      {/* Help Requests Table */}
+      <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">🆘 My Help Requests</h2>
+
         {requests.length === 0 ? (
-          <p>No help requests found.</p>
+          <p className="text-gray-600">You have not submitted any help requests yet.</p>
         ) : (
-          <table className="w-full border">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border px-3 py-2 text-left">Request ID</th>
-                <th className="border px-3 py-2 text-left">Description</th>
-                <th className="border px-3 py-2 text-left">Status</th>
-                <th className="border px-3 py-2 text-left">Requested At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req.id}>
-                  <td className="border px-3 py-2">{req.id}</td>
-                  <td className="border px-3 py-2">{req.description}</td>
-                  <td className="border px-3 py-2">
-                    <span className={`px-2 py-1 rounded text-white 
-                      ${req.status === 'Pending' ? 'bg-yellow-500' : 
-                        req.status === 'Approved' ? 'bg-green-500' : 
-                        'bg-red-500'}`}>
-                      {req.status}
-                    </span>
-                  </td>
-                  <td className="border px-3 py-2">{new Date(req.created_at).toLocaleString()}</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left border-collapse">
+              <thead>
+                <tr className="bg-blue-50 text-blue-700 border-b border-blue-200">
+                  <th className="px-4 py-3">Request ID</th>
+                  <th className="px-4 py-3">Description</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Requested At</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {requests.map((req) => (
+                  <tr key={req.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3">{req.id}</td>
+                    <td className="px-4 py-3">{req.description}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-white text-xs font-medium 
+                        ${req.status === 'Pending' ? 'bg-yellow-500' :
+                          req.status === 'Approved' ? 'bg-green-600' :
+                          'bg-red-500'}`}>
+                        {req.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-700">{new Date(req.created_at).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
