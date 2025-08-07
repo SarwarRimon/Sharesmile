@@ -98,66 +98,113 @@ const HelpSeekerDashboard = () => {
     return <div className="text-center py-20 text-lg text-gray-200 font-sans">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#141E30] via-[#243B55] to-[#0f2027] py-20 px-4 font-sans text-white">
-      <h1 className="text-4xl font-serif font-bold text-center mb-12 drop-shadow-lg mt-5">
-        Welcome, {userData.name} 🌟
-      </h1>
-
-      <div className="bg-green-100 text-gray-900 backdrop-blur-xl max-w-3xl mx-auto p-10 rounded-3xl shadow-2xl space-y-8">
-        {[
-          { label: "Email", value: userData.email },
-          { label: "Department", field: "department", value: formData.department },
-          { label: "Batch", field: "batch", value: formData.batch },
-          { label: "Address", field: "address", value: formData.address },
-          { label: "Mobile", field: "mobile", value: formData.mobile },
-        ].map((item, idx) => (
-          <div key={idx}>
-            <h3 className="text-gray-600 font-semibold text-sm mb-2 uppercase tracking-wider">
-              {item.label}
-            </h3>
-
-            {editMode && item.field ? (
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <input
-                  type="text"
-                  value={formData[item.field]}
-                  onChange={(e) => handleChange(item.field, e.target.value)}
-                  placeholder={`Enter ${item.label.toLowerCase()}`}
-                  className="w-full sm:flex-1 px-4 py-3 border border-gray-400 rounded-xl bg-white text-gray-800 focus:ring-4 focus:ring-blue-400 focus:outline-none transition font-sans shadow-md hover:border-blue-600 hover:scale-[1.02] hover:shadow-xl"
-                />
-                <button
-                  onClick={() => handleUpdate(item.field)}
-                  disabled={!formData[item.field].trim()}
-                  className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-5 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition"
-                >
-                  Update
-                </button>
-                {formData[item.field] && (
-                  <button
-                    onClick={() => handleDelete(item.field)}
-                    className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-5 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition"
-                  >
-                    Delete
-                  </button>
-                )}
+    <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
+      <div className="max-w-5xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+          {/* Profile Header */}
+          <div className="px-8 pt-12 pb-8 bg-white border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-semibold text-gray-800 mb-1">
+                  Welcome Back, <span className="text-emerald-600">{userData.name}</span>
+                </h1>
+                <p className="text-gray-500">Manage and update your profile information</p>
               </div>
-            ) : (
-              <div className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-800 font-sans text-base shadow hover:shadow-md transition">
-                {item.value || `No ${item.label.toLowerCase()} provided`}
+              <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">👤</span>
               </div>
-            )}
-
-            <hr className="my-5 border-gray-200" />
+            </div>
           </div>
-        ))}
 
-        <div className="flex justify-center pt-4">
-          <button
-            onClick={() => setEditMode(!editMode)}
-            className="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 text-white px-8 py-3 rounded-xl shadow-lg hover:scale-110 hover:shadow-2xl transition"
-          >
-            {editMode ? "Confirm Edit" : "Edit Profile"}
-          </button>
+          {/* Profile Content */}
+          <div className="p-8">
+            <div className="grid gap-6 md:grid-cols-2">
+              {[
+                { label: "Email", value: userData.email, icon: "📧", color: "blue" },
+                { label: "Department", field: "department", value: formData.department, icon: "🏢", color: "emerald" },
+                { label: "Batch", field: "batch", value: formData.batch, icon: "🎓", color: "violet" },
+                { label: "Address", field: "address", value: formData.address, icon: "📍", color: "pink" },
+                { label: "Mobile", field: "mobile", value: formData.mobile, icon: "📱", color: "amber" },
+              ].map((item, idx) => (
+                <div key={idx} className="bg-white rounded-lg border border-gray-100 p-6 transition-all duration-200 hover:shadow-md hover:border-emerald-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                      <span className="text-xl mr-3">{item.icon}</span>
+                      <h3 className="text-gray-700 font-medium">
+                        {item.label}
+                      </h3>
+                    </div>
+                    {item.field && (
+                      <button
+                        onClick={() => setEditMode(!editMode)}
+                        className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
+                      >
+                        {editMode ? "Cancel" : "Edit"}
+                      </button>
+                    )}
+                  </div>
+
+                  {editMode && item.field ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={formData[item.field]}
+                        onChange={(e) => handleChange(item.field, e.target.value)}
+                        placeholder={`Enter ${item.label.toLowerCase()}`}
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdate(item.field)}
+                          disabled={!formData[item.field].trim()}
+                          className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                        >
+                          Save Changes
+                        </button>
+                        {formData[item.field] && (
+                          <button
+                            onClick={() => handleDelete(item.field)}
+                            className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition text-sm font-medium"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <p className="text-gray-800">
+                        {item.value || `No ${item.label.toLowerCase()} provided`}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium shadow-sm hover:shadow gap-2"
+              >
+                {editMode ? (
+                  <>
+                    <span>Save All Changes</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    <span>Edit Profile</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

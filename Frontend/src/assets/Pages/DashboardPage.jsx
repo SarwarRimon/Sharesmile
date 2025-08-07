@@ -98,66 +98,80 @@ const DashboardPage = () => {
     return <div className="text-center py-20 text-lg text-gray-200 font-sans">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#141E30] via-[#243B55] to-[#0f2027] py-20 px-4 font-sans text-white">
-      <h1 className="text-4xl font-serif font-bold text-center mb-12 drop-shadow-lg">
-        Welcome, {userData.name} 🎉
-      </h1>
-
-      <div className="bg-green-100 text-gray-900 backdrop-blur-xl max-w-3xl mx-auto p-10 rounded-3xl shadow-2xl space-y-8">
-        {[
-          { label: "Email", value: userData.email },
-          { label: "Department", field: "department", value: formData.department },
-          { label: "Batch", field: "batch", value: formData.batch },
-          { label: "Address", field: "address", value: formData.address },
-          { label: "Mobile", field: "mobile", value: formData.mobile },
-        ].map((item, idx) => (
-          <div key={idx}>
-            <h3 className="text-gray-600 font-semibold text-sm mb-2 uppercase tracking-wider">
-              {item.label}
-            </h3>
-
-            {editMode && item.field ? (
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <input
-                  type="text"
-                  value={formData[item.field]}
-                  onChange={(e) => handleChange(item.field, e.target.value)}
-                  placeholder={`Enter ${item.label.toLowerCase()}`}
-                  className="w-full sm:flex-1 px-4 py-3 border border-gray-400 rounded-xl bg-white text-gray-800 focus:ring-4 focus:ring-blue-400 focus:outline-none transition font-sans shadow-md hover:border-blue-600 hover:scale-[1.02] hover:shadow-xl"
-                />
-                <button
-                  onClick={() => handleUpdate(item.field)}
-                  disabled={!formData[item.field].trim()}
-                  className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-5 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition"
-                >
-                  Update
-                </button>
-                {formData[item.field] && (
-                  <button
-                    onClick={() => handleDelete(item.field)}
-                    className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-5 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-800 font-sans text-base shadow hover:shadow-md transition">
-                {item.value || `No ${item.label.toLowerCase()} provided`}
-              </div>
-            )}
-
-            <hr className="my-5 border-gray-200" />
+    <div className="min-h-screen bg-[#f0f2f5] dark:bg-gray-900 py-12 px-4 font-sans">
+      <div className="max-w-5xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-12 text-center">
+            <h1 className="text-4xl font-bold text-white mb-2">
+              Welcome back, {userData.name} ✨
+            </h1>
+            <p className="text-purple-100 text-lg">Manage your profile information</p>
           </div>
-        ))}
 
-        <div className="flex justify-center pt-4">
-          <button
-            onClick={() => setEditMode(!editMode)}
-            className="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 text-white px-8 py-3 rounded-xl shadow-lg hover:scale-110 hover:shadow-2xl transition"
-          >
-            {editMode ? "Confirm Edit" : "Edit Profile"}
-          </button>
+          <div className="p-8">
+            <div className="grid gap-8 md:grid-cols-2">
+              {[
+                { label: "Email", value: userData.email, icon: "📧" },
+                { label: "Department", field: "department", value: formData.department, icon: "🏢" },
+                { label: "Batch", field: "batch", value: formData.batch, icon: "👥" },
+                { label: "Address", field: "address", value: formData.address, icon: "📍" },
+                { label: "Mobile", field: "mobile", value: formData.mobile, icon: "📱" },
+              ].map((item, idx) => (
+                <div key={idx} className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 transition-all duration-300 hover:shadow-md">
+                  <div className="flex items-center mb-4">
+                    <span className="text-2xl mr-3">{item.icon}</span>
+                    <h3 className="text-gray-700 dark:text-gray-200 font-semibold text-sm uppercase tracking-wider">
+                      {item.label}
+                    </h3>
+                  </div>
+
+                  {editMode && item.field ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={formData[item.field]}
+                        onChange={(e) => handleChange(item.field, e.target.value)}
+                        placeholder={`Enter ${item.label.toLowerCase()}`}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-white dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition duration-200"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdate(item.field)}
+                          disabled={!formData[item.field].trim()}
+                          className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Update
+                        </button>
+                        {formData[item.field] && (
+                          <button
+                            onClick={() => handleDelete(item.field)}
+                            className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-100 dark:border-gray-600">
+                      <p className="text-gray-800 dark:text-gray-200 font-medium">
+                        {item.value || `No ${item.label.toLowerCase()} provided`}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200"
+              >
+                {editMode ? "Save Changes" : "Edit Profile"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

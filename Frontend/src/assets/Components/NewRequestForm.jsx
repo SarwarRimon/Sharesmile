@@ -1,75 +1,122 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const NewRequest = ({ token }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState(null);
-  const [message, setMessage] = useState('');
+const NewRequestForm = () => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    amount: '',
+    document: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    if (file) {
-      formData.append('document', file);
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be logged in to submit a help request.');
+      return;
+    }
+
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('description', formData.description);
+    data.append('amount', formData.amount);
+    if (formData.document) {
+      data.append('document', formData.document);
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/help-requests', formData, {
+      const res = await axios.post('http://localhost:5000/api/help-requests', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (res.status === 201) {
-        setMessage('Request submitted!');
-        setTitle('');
-        setDescription('');
-        setFile(null);
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage('Failed to submit request.');
+      alert(res.data.message);
+      setFormData({ title: '', description: '', amount: '', document: null });
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      alert('Failed to submit help request.');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md mt-10">
-      <h2 className="text-2xl font-bold mb-4">Submit a New Help Request</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <input
-          type="text"
-          placeholder="Request Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-          required
-        />
-        <textarea
-          placeholder="Describe your issue"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
-          required
-        />
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="w-full mb-3"
-        />
+    <div className="w-full flex justify-center">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-red-100  shadow-2xl rounded-3xl p-10 w-2xl   mt-4 border border-[rgb(126,94,116)]"
+      >
+        <h2 className="text-[rgb(24,47,89)] text-3xl font-bold mb-8 text-center font-sans tracking-wide">
+          💬 Submit a Help Request
+        </h2>
+
+        <div className="mb-5">
+          <label className="block text-[rgb(60,60,110)] font-semibold mb-1 text-sm uppercase tracking-wide">Title</label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Request title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-xl border border-[rgb(180,200,230)] bg-[rgb(250,252,255)] text-[rgb(45,45,80)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[rgb(100,150,255)] transition"
+          />
+        </div>
+
+        <div className="mb-5">
+          <label className="block text-[rgb(60,60,110)] font-semibold mb-1 text-sm uppercase tracking-wide">Description</label>
+          <textarea
+            name="description"
+            placeholder="Describe your issue"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-xl border border-[rgb(180,200,230)] bg-[rgb(250,252,255)] text-[rgb(45,45,80)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[rgb(100,150,255)] resize-none h-28 transition"
+          ></textarea>
+        </div>
+
+        <div className="mb-5">
+          <label className="block text-[rgb(60,60,110)] font-semibold mb-1 text-sm uppercase tracking-wide">Amount</label>
+          <input
+            type="number"
+            name="amount"
+            placeholder="Enter required amount"
+            value={formData.amount}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-xl border border-[rgb(180,200,230)] bg-[rgb(250,252,255)] text-[rgb(45,45,80)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[rgb(100,150,255)] transition"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-[rgb(60,60,110)] font-semibold mb-1 text-sm uppercase tracking-wide">Upload Document</label>
+          <input
+            type="file"
+            name="document"
+            accept=".pdf,.doc,.docx,.jpg,.png"
+            onChange={handleChange}
+            className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[rgb(80,130,255)] file:text-white hover:file:bg-[rgb(60,110,235)] transition"
+          />
+        </div>
+
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="w-full bg-[rgb(33,112,255)] text-white font-bold py-3 rounded-xl hover:bg-[rgb(28,90,220)] shadow-md transition duration-300 uppercase tracking-wide"
         >
           Submit Request
         </button>
       </form>
-      {message && <p className="mt-4 text-center">{message}</p>}
     </div>
   );
 };
 
-export default NewRequest;
+export default NewRequestForm;
