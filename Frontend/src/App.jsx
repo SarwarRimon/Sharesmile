@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./assets/Components/Navbar";
-import MainSection from "./assets/Components/MainSection";
+
 import Footer from "./assets/Components/Footer";
 import Home from "./assets/Pages/Home";
 import Campaigns from "./assets/Pages/Campaigns";
@@ -11,7 +11,11 @@ import Signup from "./assets/Pages/Signup";
 import ContactForm from "./assets/Components/ContactForm";
 import ProtectedRoute from "./assets/Components/ProtectedRoute";
 import DashboardPage from "./assets/Pages/DashboardPage";
-
+import Mission from './assets/Pages/Mission';
+import Planning from './assets/Pages/planning';
+import PreviousWork from './assets/Pages/PreviousWork';
+import NewRequest from './assets/Components/NewRequestForm';
+import SeekHelpPage from './assets/Pages/SeekHelpPage'
 // ✅ Import AuthProvider
 import { AuthProvider } from "../src/assets/Context/AuthContext";
 
@@ -50,7 +54,14 @@ const App = () => {
             <Route path="/contact" element={<ContactForm />} />
             <Route path="/login" element={<Loginpage />} />
             <Route path="/signup" element={<Signup />} />
-
+            <Route path="/mission" element={<Mission />} />
+           <Route path="/planning" element={<Planning />} />
+            <Route path="/helpseeker-dashboard" element={<HelpSeekerDashboard />} />
+           <Route path="/seek-help" element={<SeekHelpPage />}>
+  <Route path="new-request" element={<NewRequest />} />
+  {/* Add other nested routes here */}
+</Route>
+           <Route path="/previous-works" element={<PreviousWork />} />
             {/* ✅ Updated Dashboard Route for Role Redirect */}
             <Route
               path="/dashboard"

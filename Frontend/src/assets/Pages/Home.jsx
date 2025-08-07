@@ -1,60 +1,80 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Import Link
 
 const Home = () => {
-  const totalFunds = 15000;
-
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative bg-cover bg-center h-[85vh] flex items-center justify-center"
-        style={{ backgroundImage: "url('/assets/comilla-university-campus.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-green-900 to-blue-900 opacity-70"></div>
-        <div className="text-center relative z-10 px-4 sm:px-12">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-snug">
-            “The greatest achievement is being able to do something for others.”
-          </h1>
-          <p className="mt-2 text-lg font-medium italic text-gray-100">— Dr. Muhammad Yunus</p>
-          <p className="mt-4 text-lg md:text-xl font-medium text-gray-200">
-            Your small act of kindness can uplift an entire campus. Together, we can support the students and initiatives of Comilla University.
-          </p>
-          <Link to="/donation">
-            <button className="mt-6 bg-gradient-to-r from-teal-500 to-green-600 hover:from-green-600 hover:to-teal-500 px-8 py-3 text-lg font-semibold rounded-full transition duration-300 shadow-lg hover:scale-105 text-white">
-              💖 Donate Now
-            </button>
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 text-gray-800">
+      {/* Banner Image */}
+      <section className="flex justify-center pt-20 px-4">
+        <img
+          src="/images/CoU.png"
+          alt="ShareSmile Banner"
+          className="w-[80%] max-w-6xl rounded-3xl shadow-2xl object-cover"
+        />
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-gray-100">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-          <div className="p-8 shadow-xl rounded-lg bg-gradient-to-r from-teal-500 to-green-600 text-white">
-            <h3 className="text-5xl font-bold">100+</h3>
-            <p className="text-xl font-medium">Lives Impacted</p>
-          </div>
-          <div className="p-8 shadow-xl rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-            <h3 className="text-5xl font-bold">
-              ৳{totalFunds.toLocaleString()}
-            </h3>
-            <p className="text-xl font-medium">Funds Raised</p>
-          </div>
-          <div className="p-8 shadow-xl rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white">
-            <h3 className="text-5xl font-bold">40+</h3>
-            <p className="text-xl font-medium">Active Volunteers</p>
-          </div>
-        </div>
+      {/* Website Description */}
+      <section className="max-w-4xl mx-auto px-6 py-10 text-center">
+        <h2 className="text-3xl font-serif font-bold mb-4 text-blue-700">
+          Welcome to ShareSmile 💙
+        </h2>
+        <p className="text-lg font-sans text-gray-700 leading-relaxed">
+          ShareSmile is a community-driven donation platform created for the students, teachers, and staff of Comilla University. 
+          Our mission is to bridge the gap between helpseekers and donors by providing a secure, transparent, and easy-to-use platform.
+          Whether it’s emergency aid, educational support, or campus welfare, ShareSmile empowers everyone to give back and make a difference.
+        </p>
       </section>
 
-      {/* About Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-extrabold text-gray-800">About Helping Hand Foundations</h2>
-          <p className="mt-4 text-lg font-light text-gray-700">
-            Helping Hand Foundations is a non-profit organization at Comilla University dedicated to providing resources and support for students and the wider community. Our mission is to create a sustainable impact through education, health, and social welfare initiatives.
-          </p>
+      {/* Mission, Planning, Previous Work Section */}
+      <section className="bg-white py-14 px-6">
+        <h3 className="text-2xl font-serif text-center text-blue-600 mb-8 font-bold">
+          Our Focus Areas
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Mission Box */}
+          <div className="bg-blue-100 p-6 rounded-xl shadow-lg transition hover:shadow-blue-300">
+            <h4 className="text-xl font-semibold text-blue-700 mb-3">🎯 Our Mission</h4>
+            <p className="text-gray-700">
+              To create a reliable donation gateway within Comilla University that enables transparent, accountable, and impactful giving...
+            </p>
+            <Link
+              to="/mission"
+              className="inline-block mt-4 text-blue-600 hover:text-blue-800 font-semibold"
+            >
+              Read More →
+            </Link>
+          </div>
+
+          {/* Planning Box */}
+          <div className="bg-blue-100 p-6 rounded-xl shadow-lg transition hover:shadow-blue-300">
+            <h4 className="text-xl font-semibold text-blue-700 mb-3">📅 Our Planning</h4>
+            <p className="text-gray-700">
+              - Launch verified donation campaigns <br />
+              - Offer real-time tracking of donation progress <br />
+              - Implement secure payment methods like bKash, Rocket...
+            </p>
+            <Link
+              to="/planning"
+              className="inline-block mt-4 text-blue-600 hover:text-blue-800 font-semibold"
+            >
+              Read More →
+            </Link>
+          </div>
+
+          {/* Previous Work Box */}
+          <div className="bg-blue-100 p-6 rounded-xl shadow-lg transition hover:shadow-blue-300">
+            <h4 className="text-xl font-semibold text-blue-700 mb-3">📌 Previous Works</h4>
+            <p className="text-gray-700">
+              ✅ Supported 20+ emergency fund campaigns<br />
+              ✅ Helped students afford semester fees during crisis...
+            </p>
+            <Link
+              to="/previous-works"
+              className="inline-block mt-4 text-blue-600 hover:text-blue-800 font-semibold"
+            >
+              Read More →
+            </Link>
+          </div>
         </div>
       </section>
     </div>

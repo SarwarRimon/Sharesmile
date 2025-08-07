@@ -33,9 +33,13 @@ const Navbar = () => {
           <li>
             <NavLink to="/" onClick={handleLinkClick}>Home</NavLink>
           </li>
-          <li>
-            <NavLink to="/campaigns" onClick={handleLinkClick}>Campaigns</NavLink>
-          </li>
+         <li>
+  {userRole === 'helpseeker' ? (
+    <NavLink to="/seek-help" onClick={handleLinkClick}>Seek Help</NavLink>
+  ) : (
+    <NavLink to="/campaigns" onClick={handleLinkClick}>Campaigns</NavLink>
+  )}
+</li>
           <li>
             <NavLink to="/donation" onClick={handleLinkClick}>Donate</NavLink>
           </li>
