@@ -100,11 +100,11 @@ const Navbar = () => {
             </NavLink>
           </li>
 
-          {/* Show Profile based on user role */}
+          {/* Simple Profile Link */}
           {isAuthenticated && userRole === 'admin' && (
             <li>
               <NavLink 
-                to="/admin-dashboard" 
+                to="/admin/profile" 
                 onClick={handleLinkClick}
                 className={({ isActive }) =>
                   isActive ? "block px-4 py-2 text-purple-600 font-semibold rounded-lg bg-purple-50" 

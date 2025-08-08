@@ -60,15 +60,18 @@ router.get('/statistics', adminAuth, async (req, res) => {
   }
 });
 
-// Get admin profile
+// Get admin profile with complete information
 router.get('/profile', adminAuth, async (req, res) => {
   try {
     const [rows] = await db.promise().query(
-      'SELECT id, name, email, role, created_at FROM users WHERE id = ?',
+      'SELECT * FROM users WHERE id = ? AND role = "admin"',
       [req.user.id]
     );
+    
     if (rows.length > 0) {
-      res.json(rows[0]);
+      // Remove sensitive information
+      const { password, ...adminData } = rows[0];
+      res.json(adminData);
     } else {
       res.status(404).json({ message: 'Admin profile not found' });
     }
@@ -78,13 +81,42 @@ router.get('/profile', adminAuth, async (req, res) => {
   }
 });
 
-// Get all users
+// Update admin profile
+router.put('/profile', adminAuth, async (req, res) => {
+  try {
+    const { name, phone, address, bio, designation, department } = req.body;
+    
+    await db.promise().query(
+      `UPDATE users 
+       SET name = ?, 
+           phone = ?, 
+           address = ?, 
+           bio = ?, 
+           designation = ?, 
+           department = ?
+       WHERE id = ? AND role = "admin"`,
+      [name, phone, address, bio, designation, department, req.user.id]
+    );
+    
+    res.json({ message: 'Profile updated successfully' });
+  } catch (err) {
+    console.error('Error updating admin profile:', err);
+    res.status(500).json({ message: 'Error updating profile' });
+  }
+});
+
+// Get all users 
 router.get('/users', adminAuth, async (req, res) => {
   try {
-    const [rows] = await db.promise().query(
-      'SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC'
-    );
-    res.json(rows);
+    // Simple query to get all users
+    const query = 'SELECT * FROM users';
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ message: 'Error fetching users' });
+      }
+      res.json(results);
+    });
   } catch (err) {
     console.error('Error fetching users:', err);
     res.status(500).json({ message: 'Error fetching users' });

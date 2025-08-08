@@ -4,7 +4,7 @@ import Navbar from "./assets/Components/Navbar";
 import AdminRequests from "./assets/Pages/AdminRequests";
 import AdminProfile from "./assets/Components/AdminProfile";
 import AddAdmin from "./assets/Pages/AddAdmin";
-
+import Users from "./assets/Pages/Users";
 import Footer from "./assets/Components/Footer";
 import Home from "./assets/Pages/Home";
 import Campaigns from "./assets/Pages/Campaigns";
@@ -92,6 +92,7 @@ const App = () => {
               <Route path="requests" element={<AdminRequests />} />
               <Route path="add-admin" element={<AddAdmin />} />
               <Route path="profile" element={<AdminProfile />} />
+              <Route path="users" element={<Users />} />
             </Route>
               
               <Route 
