@@ -4,21 +4,67 @@ import axios from 'axios';
 const AdminDashboard = () => {
   const [statistics, setStatistics] = useState({
     totalDonations: 0,
-    helpRequests: {},
-    users: {},
+    helpRequests: { pending: 0, approved: 0, rejected: 0 },
+    users: { admin: 0, helpseeker: 0 },
     pendingRequests: 0
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const token = localStorage.getItem('token');
 
   const fetchStatistics = useCallback(async () => {
     try {
+      setLoading(true);
+      console.log('Fetching statistics with token:', token); // Debug log
+      
+      if (!token) {
+        throw new Error('No auth token available');
+      }
+
       const res = await axios.get('http://localhost:5000/api/admin/statistics', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setStatistics(res.data);
+      
+      console.log('Raw server response:', res); // Debug full response
+      console.log('Fetched statistics data:', res.data); // Debug data
+
+      if (!res.data) {
+        throw new Error('No data received from server');
+      }
+
+      const formattedStats = {
+        totalDonations: res.data.totalDonations || 0,
+        helpRequests: {
+          pending: (res.data.helpRequests || {}).pending || 0,
+          approved: (res.data.helpRequests || {}).approved || 0,
+          rejected: (res.data.helpRequests || {}).rejected || 0,
+          ...res.data.helpRequests
+        },
+        users: {
+          admin: (res.data.users || {}).admin || 0,
+          helpseeker: (res.data.users || {}).helpseeker || 0,
+          ...res.data.users
+        },
+        pendingRequests: res.data.pendingRequests || 0
+      };
+
+      console.log('Formatted statistics:', formattedStats); // Debug formatted data
+      setStatistics(formattedStats);
+      setError(null);
     } catch (err) {
-      console.error('Failed to fetch statistics:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      setError(
+        err.response?.data?.message || 
+        err.message || 
+        'Failed to load statistics'
+      );
+    } finally {
+      setLoading(false);
     }
   }, [token]);
 
@@ -33,8 +79,24 @@ const AdminDashboard = () => {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8 mt-10 flex items-center justify-center">
+        <div className="text-xl text-gray-600">Loading statistics...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8 mt-10 flex items-center justify-center">
+        <div className="text-xl text-red-600">{error}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 mt-10">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard Overview</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

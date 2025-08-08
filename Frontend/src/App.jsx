@@ -1,6 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./assets/Components/Navbar";
+import AdminRequests from "./assets/Pages/AdminRequests";
+import AdminProfile from "./assets/Components/AdminProfile";
+import AddAdmin from "./assets/Pages/AddAdmin";
 
 import Footer from "./assets/Components/Footer";
 import Home from "./assets/Pages/Home";
@@ -23,7 +26,7 @@ import NewRequestForm from "./assets/Components/NewRequestForm";
 import { AuthProvider } from "../src/assets/Context/AuthContext";
 
 // ✅ Import dashboards
-import AdminPanel from "./assets/Pages/AdminDashboard";
+import AdminDashboard from "./assets/Pages/AdminDashboard";
 import HelpSeekerDashboard from "./assets/Pages/HelpSeekerDashboard";
 
 // ✅ Role-based redirect logic
@@ -84,11 +87,11 @@ const App = () => {
                 </ProtectedRoute>
               }
             >
-              <Route path="dashboard" element={<AdminPanel />} />
-              <Route path="requests" element={<div>Help Requests</div>} />
-              <Route path="donations" element={<div>Donations</div>} />
-              <Route path="users" element={<div>Users Management</div>} />
-              <Route path="profile" element={<div>Admin Profile</div>} />
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="requests" element={<AdminRequests />} />
+              <Route path="add-admin" element={<AddAdmin />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
               
               <Route 

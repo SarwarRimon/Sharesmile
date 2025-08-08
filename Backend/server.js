@@ -22,8 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use("/api/admin", adminRoutes); // Admin routes
 app.use(express.json());
+
 // 🔐 Authentication Middleware
 const authenticateToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -39,7 +39,8 @@ const authenticateToken = (req, res, next) => {
 // Routes
 app.use('/api', contactRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/admin/requests', require('./routes/adminRequests'));
+app.use('/api/admin', adminRoutes); // Admin routes with statistics
+app.use('/api/admin', require('./routes/helpRequestManagement')); // Help request management routes
 
 
 

@@ -13,6 +13,10 @@ module.exports = (req, res, next) => {
       return res.status(403).json({ message: 'Invalid or expired token' });
     }
 
+    if (user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
+    }
+
     req.user = user;
     next();
   });
