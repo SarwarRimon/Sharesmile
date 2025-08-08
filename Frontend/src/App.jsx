@@ -16,6 +16,9 @@ import Planning from './assets/Pages/planning';
 import PreviousWork from './assets/Pages/PreviousWork';
 import NewRequest from './assets/Components/NewRequestForm';
 import SeekHelpPage from './assets/Pages/SeekHelpPage'
+import AdminLayout from "./assets/Pages/AdminLayout";
+import MyRequests from "./assets/Components/MyRequests";
+import NewRequestForm from "./assets/Components/NewRequestForm";
 // ✅ Import AuthProvider
 import { AuthProvider } from "../src/assets/Context/AuthContext";
 
@@ -32,7 +35,7 @@ const RoleBasedRedirect = () => {
 
   switch (user.role) {
     case "admin":
-      return <Navigate to="/admin-dashboard" replace />;
+      return <Navigate to="/admin/dashboard" replace />;
     case "helpseeker":
       return <Navigate to="/helpseeker-dashboard" replace />;
     default:
@@ -58,7 +61,7 @@ const App = () => {
            <Route path="/planning" element={<Planning />} />
             <Route path="/helpseeker-dashboard" element={<HelpSeekerDashboard />} />
            <Route path="/seek-help" element={<SeekHelpPage />}>
-  <Route path="new-request" element={<NewRequest />} />
+           <Route path="new-request" element={<NewRequest />} />
   {/* Add other nested routes here */}
 </Route>
            <Route path="/previous-works" element={<PreviousWork />} />
@@ -72,15 +75,38 @@ const App = () => {
               }
             />
 
+            {/* Admin Routes */}
             <Route
-              path="/admin-dashboard"
+              path="/admin"
               element={
                 <ProtectedRoute>
-                  <AdminPanel />
+                  <AdminLayout />
                 </ProtectedRoute>
               }
-            />
-
+            >
+              <Route path="dashboard" element={<AdminPanel />} />
+              <Route path="requests" element={<div>Help Requests</div>} />
+              <Route path="donations" element={<div>Donations</div>} />
+              <Route path="users" element={<div>Users Management</div>} />
+              <Route path="profile" element={<div>Admin Profile</div>} />
+            </Route>
+              
+              <Route 
+  path="/seek-help/my-requests" 
+  element={
+    <ProtectedRoute>
+      <MyRequests />
+    </ProtectedRoute>
+  } 
+/>
+<Route 
+  path="/seek-help/new-request" 
+  element={
+    <ProtectedRoute>
+      <NewRequestForm />
+    </ProtectedRoute>
+  } 
+/>
             <Route
               path="/profile"
               element={
@@ -89,6 +115,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+
           </Routes>
         </div>
         <Footer />

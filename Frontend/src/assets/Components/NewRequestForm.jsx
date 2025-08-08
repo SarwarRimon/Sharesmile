@@ -43,9 +43,12 @@ const NewRequestForm = () => {
       });
       alert(res.data.message);
       setFormData({ title: '', description: '', amount: '', document: null });
+      // Redirect to MyRequests after successful submission
+      //window.location.href = '/help-seeker/my-requests';
     } catch (error) {
       console.error('Error submitting request:', error);
-      alert('Failed to submit help request.');
+      const errorMessage = error.response?.data?.message || 'Failed to submit help request.';
+      alert(errorMessage);
     }
   };
 

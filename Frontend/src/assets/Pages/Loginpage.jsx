@@ -42,7 +42,7 @@ const Loginpage = () => {
 
         setTimeout(() => {
           if (data.user.role === 'admin') {
-            navigate('/admin-dashboard');
+            navigate('/admin/dashboard');
           } else if (data.user.role === 'helpseeker') {
             navigate('/helpseeker-dashboard');
           } else if (data.user.role === 'donor') {
