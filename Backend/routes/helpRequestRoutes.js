@@ -38,4 +38,66 @@ router.post('/', authenticateToken, upload.single('document'), (req, res) => {
   });
 });
 
+
+
+// Get logged-in user's requests
+router.get('/my-requests', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const sql = `
+    SELECT id, title, description, amount, document_path, status, created_at
+    FROM help_requests
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+  `;
+
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching requests:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+// Admin: Get all requests
+router.get('/admin/all-requests', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Not authorized' });
+  }
+
+  const sql = `
+    SELECT hr.id, hr.title, hr.description, hr.amount, hr.document_path, hr.status, hr.created_at,
+           u.name as user_name
+    FROM help_requests hr
+    JOIN users u ON hr.user_id = u.id
+    ORDER BY hr.created_at DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching all requests:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+// Admin: Approve or finish a request
+router.put('/:id/status', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Not authorized' });
+  }
+
+  const { status } = req.body;
+  const sql = `UPDATE help_requests SET status = ? WHERE id = ?`;
+
+  db.query(sql, [status, req.params.id], (err) => {
+    if (err) {
+      console.error('Error updating status:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json({ message: `Request ${status} successfully` });
+  });
+});
+
 module.exports = router;

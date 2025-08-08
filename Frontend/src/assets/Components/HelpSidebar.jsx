@@ -11,7 +11,7 @@ const HelpSidebar = () => {
       
       {[ 
         {to: "/seek-help/new-request", icon: <FaPlusCircle />, label: "New Request"},
-        {to: "/seek-help/requests", icon: <FaList />, label: "My Requests"},
+        {to: "/seek-help/my-requests", icon: <FaList />, label: "My Requests"},
         {to: "/seek-help/messages", icon: <FaEnvelope />, label: "Messages"},
         {to: "/seek-help/guidelines", icon: <FaInfoCircle />, label: "Guidelines"},
         {to: "/seek-help/contact", icon: <FaUserShield />, label: "Contact Admin"},

@@ -62,74 +62,113 @@ const Donation = () => {
   };
 
   return (
-    <div className="py-25 bg-gray-50 min-h-screen">
-      <h1 className="text-center text-4xl font-bold text-green-600">🌱 Make a Donation</h1>
-      <p className="text-center text-gray-700 mt-2 max-w-xl mx-auto">
-        Every little contribution counts. Help us spread kindness and create a lasting impact.
-      </p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            Make a Difference Today
+          </h1>
+          <p className="text-gray-600 max-w-xl mx-auto">
+            Your generosity can transform lives. Join us in creating positive change and spreading hope to those in need.
+          </p>
+        </div>
 
-      <div className="max-w-lg mx-auto mt-10 bg-white shadow-xl rounded-xl p-8">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-lg">Donation Amount (৳)</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full p-4 border-2 border-green-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter amount"
-              required
-            />
-          </div>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          {message && (
+            <div className={`mb-6 p-4 rounded-lg ${
+              message.includes('❌') 
+                ? 'bg-red-50 border border-red-100 text-red-600'
+                : 'bg-green-50 border border-green-100 text-green-600'
+            }`}>
+              <p className="text-center text-sm font-medium">{message}</p>
+            </div>
+          )}
 
-          <div className="mb-6">
-            <label className="block text-gray-700 text-lg">Select Campaign</label>
-            <select
-              value={campaign}
-              onChange={(e) => setCampaign(e.target.value)}
-              className="w-full p-4 border-2 border-green-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Donation Amount (৳)
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">৳</span>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full pl-8 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                  placeholder="Enter amount"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Campaign
+              </label>
+              <div className="relative">
+                <select
+                  value={campaign}
+                  onChange={(e) => setCampaign(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all appearance-none bg-white"
+                  required
+                >
+                  <option value="Education For All">Education For All</option>
+                  <option value="Healthcare Support">Healthcare Support</option>
+                  <option value="Hunger-Free Tomorrow">Hunger-Free Tomorrow</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Payment Method
+              </label>
+              <div className="relative">
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all appearance-none bg-white"
+                  required
+                >
+                  <option value="bKash">bKash</option>
+                  <option value="Rocket">Rocket</option>
+                  <option value="Nagad">Nagad</option>
+                  <option value="Bank">Bank Transfer</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
             >
-              <option value="Education For All">Education For All</option>
-              <option value="Healthcare Support">Healthcare Support</option>
-              <option value="Hunger-Free Tomorrow">Hunger-Free Tomorrow</option>
-              {/* Add more campaigns here */}
-            </select>
-          </div>
+              <span>Make Donation</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </form>
+        </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 text-lg">Choose Payment Method</label>
-            <select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full p-4 border-2 border-green-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            >
-              <option value="bKash">bKash</option>
-              <option value="Rocket">Rocket</option>
-              <option value="Nagad">Nagad</option>
-              <option value="Bank">Bank Transfer</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-500 transition-all duration-300 ease-in-out"
-          >
-            Donate Now
-          </button>
-        </form>
-
-        {message && (
-          <p className="text-center mt-4 font-semibold text-green-600">{message}</p>
-        )}
+        <div className="mt-8 text-center">
+          <p className="text-gray-600">
+            100% of your donation goes directly to those in need.
+            <br />
+            Thank you for your generosity and compassion.
+          </p>
+        </div>
       </div>
-
-      <div className="text-center mt-8 text-gray-600">
-        Your donation goes directly to those in need. Thank you for making the world a better place.
-      </div>
-
-      
     </div>
   );
 };

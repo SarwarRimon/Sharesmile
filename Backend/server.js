@@ -35,7 +35,7 @@ const authenticateToken = (req, res, next) => {
 // Routes
 app.use('/api', contactRoutes);
 app.use('/api/auth', authRoutes);
-
+app.use('/api/admin/requests', require('./routes/adminRequests'));
 
 
 
@@ -129,7 +129,7 @@ app.get('/api/user/profile', authenticateToken, (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
-app.use('/api/help-requests', helpRequestRoutes);
+app.use('/api/admin/requests', helpRequestRoutes);
 
 
 // 🚀 Start Server

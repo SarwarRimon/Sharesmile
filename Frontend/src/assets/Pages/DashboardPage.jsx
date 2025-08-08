@@ -98,7 +98,7 @@ const DashboardPage = () => {
     return <div className="text-center py-20 text-lg text-gray-200 font-sans">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] dark:bg-gray-900 py-12 px-4 font-sans">
+    <div className="min-h-screen bg-[#f0f2f5] dark:bg-gray-900 py-12 px-4 font-sans mt-10">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mb-8">
           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-12 text-center">
