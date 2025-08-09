@@ -23,19 +23,101 @@ router.get('/pending', authenticateToken, requireAdmin, (req, res) => {
   });
 });
 
-// 📌 Approve or Reject request
+  // 📌 Approve or Reject request
 router.put('/:id/status', authenticateToken, requireAdmin, (req, res) => {
   const { status } = req.body; // 'approved' or 'rejected'
   const { id } = req.params;
 
-  const sql = 'UPDATE help_requests SET status = ?, updated_at = NOW() WHERE id = ?';
-  db.query(sql, [status, id], (err, result) => {
+  // Start a transaction
+  db.beginTransaction(err => {
     if (err) {
-      console.error('Error updating request status:', err);
+      console.error('Error starting transaction:', err);
       return res.status(500).json({ message: 'Database error' });
     }
-    res.json({ message: `Request ${status} successfully` });
-  });
-});
 
-module.exports = router;
+    // First update the request status
+    const updateSql = 'UPDATE help_requests SET status = ?, updated_at = NOW() WHERE id = ?';
+    db.query(updateSql, [status, id], (err, result) => {
+      if (err) {
+        db.rollback(() => {
+          console.error('Error updating request status:', err);
+          res.status(500).json({ message: 'Database error' });
+        });
+        return;
+      }
+
+      // If request is approved, create a campaign
+      if (status === 'approved') {
+        // Get help request details
+        const getRequestSql = 'SELECT * FROM help_requests WHERE id = ?';
+        db.query(getRequestSql, [id], (err, requests) => {
+          if (err || requests.length === 0) {
+            db.rollback(() => {
+              console.error('Error fetching help request:', err);
+              res.status(500).json({ message: 'Database error' });
+            });
+            return;
+          }
+
+          const request = requests[0];
+          // Create campaign
+          const createCampaignSql = `
+            INSERT INTO campaigns (
+              title,
+              description,
+              required_amount,
+              current_amount,
+              document_path,
+              help_request_id,
+              requester_id,
+              status
+            ) VALUES (?, ?, ?, 0, ?, ?, ?, 'active')
+          `;
+          
+          db.query(createCampaignSql, [
+            request.title,
+            request.description,
+            request.amount,
+            request.document_path,
+            request.id,
+            request.user_id
+          ], (err, result) => {
+            if (err) {
+              db.rollback(() => {
+                console.error('Error creating campaign:', err);
+                res.status(500).json({ message: 'Error creating campaign' });
+              });
+              return;
+            }
+
+            // Commit the transaction
+            db.commit(err => {
+              if (err) {
+                db.rollback(() => {
+                  console.error('Error committing transaction:', err);
+                  res.status(500).json({ message: 'Database error' });
+                });
+                return;
+              }
+              res.json({ 
+                message: `Request ${status} successfully${status === 'approved' ? ' and campaign created' : ''}` 
+              });
+            });
+          });
+        });
+      } else {
+        // If rejected, just commit the status update
+        db.commit(err => {
+          if (err) {
+            db.rollback(() => {
+              console.error('Error committing transaction:', err);
+              res.status(500).json({ message: 'Database error' });
+            });
+            return;
+          }
+          res.json({ message: `Request ${status} successfully` });
+        });
+      }
+    });
+  });
+});module.exports = router;

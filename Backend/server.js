@@ -41,6 +41,7 @@ app.use('/api', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes); // Admin routes with statistics
 app.use('/api/admin', require('./routes/helpRequestManagement')); // Help request management routes
+app.use('/api/campaigns', require('./routes/campaignRoutes')); // Campaign routes
 
 
 

@@ -1,29 +1,27 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Campaigns = () => {
   const navigate = useNavigate();
+  const [campaigns, setCampaigns] = useState([]);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/campaigns/active');
+        setCampaigns(response.data);
+      } catch (error) {
+        console.error('Error fetching campaigns:', error);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
 
   const handleDonate = (campaign) => {
     navigate(`/donation?campaign=${encodeURIComponent(campaign)}`);
   };
-
-  const campaigns = [
-    {
-      title: "Education for All",
-      description: "Providing education resources for underprivileged children.",
-      image: "/images/education.jpg", // Replace with actual image path
-    },
-    {
-      title: "Health Care Support",
-      description: "Helping families with medical expenses.",
-      image: "/images/patients.jpg", // Replace with actual image path
-    },
-    {
-      title: "Hunger-Free Tomorrow",
-      description: "Supporting helpless communities.",
-      image: "/images/food.jpg", // Replace with actual image path
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4">
@@ -45,11 +43,16 @@ const Campaigns = () => {
             >
               <div className="relative">
                 <img 
-                  src={campaign.image} 
+                  src={campaign.document_path || "/images/education.jpg"} 
                   alt={campaign.title} 
                   className="w-full h-56 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                {campaign.required_amount && (
+                  <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
+                    Required: ${campaign.required_amount}
+                  </div>
+                )}
               </div>
               
               <div className="p-6">
@@ -59,6 +62,19 @@ const Campaigns = () => {
                 <p className="text-gray-600 mb-6">
                   {campaign.description}
                 </p>
+                {campaign.current_amount !== undefined && (
+                  <div className="mb-4">
+                    <div className="h-2 bg-gray-200 rounded-full">
+                      <div 
+                        className="h-2 bg-purple-600 rounded-full" 
+                        style={{ width: `${Math.min((campaign.current_amount / campaign.required_amount) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Raised: ${campaign.current_amount} of ${campaign.required_amount}
+                    </p>
+                  </div>
+                )}
                 <div className="mt-auto">
                   <button
                     onClick={() => handleDonate(campaign.title)}
