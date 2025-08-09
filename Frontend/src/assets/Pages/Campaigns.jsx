@@ -41,7 +41,7 @@ const Campaigns = () => {
           {campaigns.map((campaign, index) => (
             <div 
               key={index} 
-              className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="bg-grey rounded-2xl shadow-lg border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="relative">
                 <img 
