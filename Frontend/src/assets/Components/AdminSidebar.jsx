@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaUsers } from "react-icons/fa";
+import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaUsers, FaMoneyBillWave } from "react-icons/fa";
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -7,6 +7,7 @@ const AdminSidebar = () => {
   const menuItems = [
     { to: "/admin/dashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "/admin/requests", icon: <FaClipboardList />, label: "Requests" },
+    { to: "/admin/donations", icon: <FaMoneyBillWave />, label: "Donation Requests" },
     { to: "/admin/add-admin", icon: <FaUserPlus />, label: "Add Admin" },
     { to: "/admin/users", icon: <FaUsers />, label: "Users" },
   ];

@@ -10,12 +10,14 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const navigate = useNavigate();
 
   // Login function
-  const login = (token) => {
+  const login = (newToken) => {
     // Store token in localStorage and update authentication state
-    localStorage.setItem('token', token);
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
     setIsAuthenticated(true);
   };
 
@@ -38,8 +40,8 @@ export const AuthProvider = ({ children }) => {
   }, []);  // Empty dependency array ensures this effect runs only once (on mount)
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}  {/* Render the children components (App components) */}
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, token }}>
+      {children}
     </AuthContext.Provider>
   );
 };

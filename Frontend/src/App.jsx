@@ -1,5 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
+import Messages from "./assets/Pages/Messages";
 import Navbar from "./assets/Components/Navbar";
 import AdminRequests from "./assets/Pages/AdminRequests";
 import AdminProfile from "./assets/Components/AdminProfile";
@@ -28,6 +30,7 @@ import { AuthProvider } from "../src/assets/Context/AuthContext";
 // ✅ Import dashboards
 import AdminDashboard from "./assets/Pages/AdminDashboard";
 import HelpSeekerDashboard from "./assets/Pages/HelpSeekerDashboard";
+import DonationRequests from "./assets/Pages/DonationRequests";
 
 // ✅ Role-based redirect logic
 const RoleBasedRedirect = () => {
@@ -50,6 +53,7 @@ const App = () => {
   return (
     <AuthProvider>
       <div className="font-sans bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+        <Toaster position="top-right" />
         <Navbar />
 
         <div className="flex-grow">
@@ -65,6 +69,7 @@ const App = () => {
             <Route path="/helpseeker-dashboard" element={<HelpSeekerDashboard />} />
            <Route path="/seek-help" element={<SeekHelpPage />}>
            <Route path="new-request" element={<NewRequest />} />
+           <Route path="messages" element={<Messages />} />
   {/* Add other nested routes here */}
 </Route>
            <Route path="/previous-works" element={<PreviousWork />} />
@@ -90,6 +95,7 @@ const App = () => {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="requests" element={<AdminRequests />} />
+              <Route path="donations" element={<DonationRequests />} />
               <Route path="add-admin" element={<AddAdmin />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="users" element={<Users />} />
