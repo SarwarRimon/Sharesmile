@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Card, Button, GradientText } from './common';
+import { themeColors, combineClasses } from './theme';
+import { FaEnvelope, FaUser, FaPaperPlane, FaCheck, FaComment, FaClock } from 'react-icons/fa';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -7,17 +10,19 @@ const ContactForm = () => {
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     try {
       const response = await fetch('http://localhost:5000/api/contact', {
@@ -27,9 +32,8 @@ const ContactForm = () => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response)
+      
       if (response.ok) {
-        console.log('Message sent');
         setIsSubmitted(true);
         setFormData({ name: '', email: '', message: '' });
       } else {
@@ -39,98 +43,154 @@ const ContactForm = () => {
     } catch (err) {
       console.error('Network or Server error:', err);
       alert('Network or Server error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4">
+    <section className={combineClasses(
+      "min-h-screen py-12 px-4",
+      themeColors.bgGradient.light,
+      themeColors.animation.fadeIn
+    )}>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <GradientText as="h2" className="text-4xl font-bold mb-4">
             Get in Touch
-          </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          </GradientText>
+          <p className={combineClasses(
+            "text-slate-600 max-w-xl mx-auto",
+            "text-lg leading-relaxed"
+          )}>
             Have questions about our initiatives or want to learn more about how you can help? 
             We'd love to hear from you.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-          {isSubmitted && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-lg">
-              <p className="text-green-600 text-center text-sm font-medium flex items-center justify-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                Your message has been sent successfully!
+        <Card className={combineClasses(
+          "p-8",
+          themeColors.animation.slideUp,
+          themeColors.card.base,
+          themeColors.card.hover
+        )}>
+          {isSubmitted ? (
+            <div className={combineClasses(
+              "p-8 text-center",
+              themeColors.animation.slideUp
+            )}>
+              <div className={combineClasses(
+                "w-16 h-16 mx-auto mb-6 rounded-full",
+                "flex items-center justify-center",
+                themeColors.bgGradient.accent
+              )}>
+                <FaCheck className="w-8 h-8 text-white" />
+              </div>
+              <GradientText as="h3" className="text-2xl font-bold mb-4">
+                Message Sent!
+              </GradientText>
+              <p className="text-slate-600">
+                Thank you for reaching out. We'll get back to you soon.
               </p>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className={combineClasses(
+                        themeColors.input.base,
+                        themeColors.input.focus,
+                        "pl-10"
+                      )}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaUser className="h-5 w-5 text-slate-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={combineClasses(
+                        themeColors.input.base,
+                        themeColors.input.focus,
+                        "pl-10"
+                      )}
+                      placeholder="Enter your email address"
+                      required
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaEnvelope className="h-5 w-5 text-slate-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
+                  Your Message
+                </label>
+                <div className="relative">
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows="5"
+                    className={combineClasses(
+                      themeColors.input.base,
+                      themeColors.input.focus,
+                      "pl-10 min-h-[120px] resize-none"
+                    )}
+                    placeholder="What would you like to tell us?"
+                    required
+                  ></textarea>
+                  <div className="absolute top-3 left-0 pl-3 pointer-events-none">
+                    <FaComment className="h-5 w-5 text-slate-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  variant="gradient"
+                  loading={isSubmitting}
+                >
+                  <span>Send Message</span>
+                  <FaPaperPlane className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </form>
           )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-                placeholder="Enter your email address"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                Your Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                rows="5"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
-                placeholder="What would you like to tell us?"
-                required
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <span>Send Message</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </button>
-          </form>
-        </div>
+        </Card>
 
         <div className="mt-8 text-center">
-          <p className="text-gray-600">
-            We typically respond within 24-48 hours.
+          <p className="text-slate-600 flex items-center justify-center gap-2">
+            <FaClock className="h-4 w-4" />
+            <span>We typically respond within 24-48 hours</span>
           </p>
         </div>
       </div>

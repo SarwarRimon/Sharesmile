@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaUsers, FaMoneyBillWave } from "react-icons/fa";
+import { themeColors, combineClasses } from './theme';
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -14,10 +15,22 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="min-h-screen w-64 bg-[rgb(33,49,89)] text-white flex flex-col shadow-lg">
+    <div className={combineClasses(
+      "min-h-screen w-64 flex flex-col",
+      themeColors.bgGradient.dark,
+      "text-white border-r border-slate-700",
+      themeColors.shadow
+    )}>
       {/* Logo */}
-      <div className="p-6 text-2xl font-bold tracking-wide text-center border-b border-gray-700">
-        Admin Panel
+      <div className={combineClasses(
+        "p-6 text-2xl font-bold tracking-wide text-center",
+        "border-b border-slate-700/50",
+        "bg-gradient-to-b from-slate-800 to-slate-900"
+      )}>
+        <span className={combineClasses(
+          themeColors.animation.pulse,
+          "bg-gradient-to-r from-sky-400 to-teal-400 bg-clip-text text-transparent"
+        )}>Admin Panel</span>
       </div>
 
       {/* Navigation */}
@@ -26,12 +39,16 @@ const AdminSidebar = () => {
           <Link
             key={to}
             to={to}
-            className={`flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-all duration-200
-              ${
-                location.pathname === to
-                  ? "bg-[rgb(100,150,255)] text-white shadow-md"
-                  : "hover:bg-[rgb(50,75,130)]"
-              }`}
+            className={combineClasses(
+              "flex items-center gap-4 px-4 py-3 rounded-lg font-medium",
+              themeColors.interactive.base,
+              location.pathname === to
+                ? combineClasses(
+                    "bg-sky-500/10 text-sky-400 border border-sky-500/20",
+                    "shadow-lg shadow-sky-500/10"
+                  )
+                : "hover:bg-slate-800/80 text-slate-300 hover:text-white"
+            )}
           >
             <span className="text-lg">{icon}</span>
             <span>{label}</span>

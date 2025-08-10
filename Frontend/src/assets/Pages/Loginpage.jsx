@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Card, Button, GradientText } from '../Components/common';
+import { themeColors, combineClasses } from '../Components/theme';
 
 const Loginpage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -61,24 +63,24 @@ const Loginpage = () => {
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+    <section className={combineClasses("flex items-center justify-center min-h-screen", themeColors.bgGradient.light, themeColors.animation.fadeIn)}>
       <div className="w-full max-w-md">
-        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+        <Card className={themeColors.animation.slideUp}>
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <GradientText as="h2" className="text-3xl font-bold mb-2">
               Welcome Back
-            </h2>
-            <p className="text-gray-600 mt-2">Sign in to continue to ShareSmile</p>
+            </GradientText>
+            <p className="text-gray-600">Sign in to continue to ShareSmile</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg">
+            <div className={combineClasses("mb-6 p-4 rounded-lg", themeColors.animation.slideUp)}>
               <p className="text-red-600 text-center text-sm">{error}</p>
             </div>
           )}
           
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-lg">
+            <div className={combineClasses("mb-6 p-4 rounded-lg bg-green-50 border border-green-100", themeColors.animation.slideUp)}>
               <p className="text-green-600 text-center text-sm">You have successfully logged in! 🎉</p>
             </div>
           )}
@@ -94,7 +96,7 @@ const Loginpage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                className={combineClasses(themeColors.input.base, themeColors.input.focus)}
                 placeholder="Enter your email"
               />
             </div>
@@ -110,12 +112,15 @@ const Loginpage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                  className={combineClasses(themeColors.input.base, themeColors.input.focus)}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className={combineClasses(
+                    "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400",
+                    themeColors.interactive.base
+                  )}
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -123,10 +128,10 @@ const Loginpage = () => {
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3"
             >
               {isLoading ? (
                 <>
@@ -139,7 +144,7 @@ const Loginpage = () => {
               ) : (
                 'Sign in'
               )}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-8 text-center">
@@ -147,13 +152,13 @@ const Loginpage = () => {
               Don't have an account?{' '}
               <a 
                 href="/signup" 
-                className="text-purple-600 font-medium hover:text-purple-700 transition-colors"
+                className={combineClasses("font-medium", themeColors.textGradient, themeColors.interactive.base)}
               >
                 Create Account
               </a>
             </p>
           </div>
-        </div>
+        </Card>
       </div>
     </section>
   );

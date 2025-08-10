@@ -21,28 +21,36 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100 fixed w-full z-50">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+    <nav className="bg-white/80 backdrop-blur-sm shadow-lg fixed w-full z-50 animate-fade-in">
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/50 via-purple-50/50 to-pink-50/50 opacity-50"></div>
+      <div className="container mx-auto flex justify-between items-center py-4 px-6 relative">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           ShareSmile
         </h1>
         
         <button 
-          className="md:hidden rounded-lg p-2 text-gray-600 hover:bg-purple-50 hover:text-purple-600 transition-colors" 
+          className="md:hidden rounded-xl p-2 text-gray-600 hover:text-purple-600 transition-all duration-300
+                     relative group overflow-hidden" 
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative">
+            {isOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </div>
         </button>
 
-        <ul className={`md:flex md:gap-2 absolute md:static bg-white md:bg-transparent w-full md:w-auto top-16 left-0 md:flex-row flex-col p-4 md:p-0 border-b md:border-0 border-gray-100 md:items-center space-y-2 md:space-y-0 transition-all duration-200 shadow-lg md:shadow-none ${isOpen ? 'block' : 'hidden'}`}>
+        <ul className={`md:flex md:gap-3 absolute md:static bg-white/90 backdrop-blur-sm md:bg-transparent w-full md:w-auto 
+                    top-16 left-0 md:flex-row flex-col p-4 md:p-0 border-b md:border-0 border-purple-100 
+                    md:items-center space-y-2 md:space-y-0 transition-all duration-300 
+                    shadow-xl md:shadow-none ${isOpen ? 'block animate-slide-down' : 'hidden'}`}>
           <li>
             <NavLink 
               to="/" 
