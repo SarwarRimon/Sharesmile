@@ -33,9 +33,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes); // Admin routes with statistics
 app.use('/api/admin', require('./routes/helpRequestManagement')); // Help request management routes
 app.use('/api/admin', require('./routes/donationManagement')); // Donation management routes
+app.use('/api/admin', require('./routes/campaignManagement')); // Campaign management routes
 app.use('/api/campaigns', require('./routes/campaignRoutes')); // Campaign routes
 app.use('/api/notifications', require('./routes/notificationRoutes')); // Notification routes
 app.use('/api/donations', require('./routes/donationRoutes')); // Donation routes
+app.use('/api/donations', require('./routes/donorHistoryRoutes')); // Donor history routes
 
 
 

@@ -31,6 +31,8 @@ import { AuthProvider } from "../src/assets/Context/AuthContext";
 import AdminDashboard from "./assets/Pages/AdminDashboard";
 import HelpSeekerDashboard from "./assets/Pages/HelpSeekerDashboard";
 import DonationRequests from "./assets/Pages/DonationRequests";
+import DonorHistory from "./assets/Pages/DonorHistory";
+import AdminCampaigns from "./assets/Pages/AdminCampaigns";
 
 // ✅ Role-based redirect logic
 const RoleBasedRedirect = () => {
@@ -61,6 +63,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/donation-form" element={<DonationForm />} />
+            <Route path="/donor-history" element={<ProtectedRoute><DonorHistory /></ProtectedRoute>} />
             <Route path="/contact" element={<ContactForm />} />
             <Route path="/login" element={<Loginpage />} />
             <Route path="/signup" element={<Signup />} />
@@ -96,6 +99,7 @@ const App = () => {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="requests" element={<AdminRequests />} />
               <Route path="donations" element={<DonationRequests />} />
+              <Route path="campaigns" element={<AdminCampaigns />} />
               <Route path="add-admin" element={<AddAdmin />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="users" element={<Users />} />

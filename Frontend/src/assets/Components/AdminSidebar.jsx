@@ -8,6 +8,7 @@ const AdminSidebar = () => {
     { to: "/admin/dashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "/admin/requests", icon: <FaClipboardList />, label: "Requests" },
     { to: "/admin/donations", icon: <FaMoneyBillWave />, label: "Donation Requests" },
+    { to: "/admin/campaigns", icon: <FaClipboardList />, label: "Manage Campaigns" },
     { to: "/admin/add-admin", icon: <FaUserPlus />, label: "Add Admin" },
     { to: "/admin/users", icon: <FaUsers />, label: "Users" },
   ];
