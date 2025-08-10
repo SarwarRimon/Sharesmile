@@ -52,22 +52,58 @@ router.put('/help-requests/:id', adminAuth, async (req, res) => {
       return res.status(404).json({ message: 'Help request not found' });
     }
 
-    // Get user information for notification
+    // Get help request details with user information
     const [requestData] = await connection.query(
-      'SELECT hr.user_id, hr.title, u.email FROM help_requests hr JOIN users u ON hr.user_id = u.id WHERE hr.id = ?',
+      `SELECT hr.*, u.name as requester_name, u.email 
+       FROM help_requests hr 
+       JOIN users u ON hr.user_id = u.id 
+       WHERE hr.id = ?`,
       [id]
     );
 
     console.log('Request data found:', requestData[0]); // Debug log
 
     if (requestData.length > 0) {
+      const request = requestData[0];
+
+      // If status is approved, create a campaign
+      if (status === 'approved') {
+        try {
+          // Create campaign
+          const [campaignResult] = await connection.query(
+            `INSERT INTO campaigns (
+              title,
+              description,
+              required_amount,
+              document_path,
+              help_request_id,
+              requester_id,
+              status
+            ) VALUES (?, ?, ?, ?, ?, ?, 'active')`,
+            [
+              request.title,
+              request.description,
+              request.amount,
+              request.document_path,
+              request.id,
+              request.user_id
+            ]
+          );
+          console.log('Campaign created:', campaignResult);
+        } catch (campaignErr) {
+          console.error('Error creating campaign:', campaignErr);
+          await connection.rollback();
+          return res.status(500).json({ message: 'Error creating campaign' });
+        }
+      }
+
       try {
         // Create notification
         await connection.query(
           'INSERT INTO notifications (user_id, message, created_at) VALUES (?, ?, NOW())',
           [
-            requestData[0].user_id,
-            `Your help request "${requestData[0].title}" has been ${status}`,
+            request.user_id,
+            `Your help request "${request.title}" has been ${status}`,
           ]
         );
         console.log('Notification created'); // Debug log

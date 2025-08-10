@@ -29,27 +29,26 @@ router.put('/:id/status', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
 
   // Start a transaction
-  db.beginTransaction(err => {
+  db.beginTransaction(async (err) => {
     if (err) {
       console.error('Error starting transaction:', err);
       return res.status(500).json({ message: 'Database error' });
     }
 
-    // First update the request status
-    const updateSql = 'UPDATE help_requests SET status = ?, updated_at = NOW() WHERE id = ?';
-    db.query(updateSql, [status, id], (err, result) => {
-      if (err) {
-        db.rollback(() => {
-          console.error('Error updating request status:', err);
-          res.status(500).json({ message: 'Database error' });
-        });
-        return;
-      }
+    try {
+      // First update the request status
+      const updateSql = 'UPDATE help_requests SET status = ?, updated_at = NOW() WHERE id = ?';
+      await db.query(updateSql, [status, id]);
 
       // If request is approved, create a campaign
       if (status === 'approved') {
-        // Get help request details
-        const getRequestSql = 'SELECT * FROM help_requests WHERE id = ?';
+        // Get help request details with user information
+        const getRequestSql = `
+          SELECT hr.*, u.name as requester_name 
+          FROM help_requests hr
+          JOIN users u ON hr.user_id = u.id 
+          WHERE hr.id = ?
+        `;
         db.query(getRequestSql, [id], (err, requests) => {
           if (err || requests.length === 0) {
             db.rollback(() => {
@@ -60,7 +59,8 @@ router.put('/:id/status', authenticateToken, requireAdmin, (req, res) => {
           }
 
           const request = requests[0];
-          // Create campaign
+          // Create campaign with formatted title
+          const campaignTitle = `${request.title} - Help Request from ${request.requester_name}`;
           const createCampaignSql = `
             INSERT INTO campaigns (
               title,
@@ -75,7 +75,7 @@ router.put('/:id/status', authenticateToken, requireAdmin, (req, res) => {
           `;
           
           db.query(createCampaignSql, [
-            request.title,
+            campaignTitle,
             request.description,
             request.amount,
             request.document_path,
@@ -98,6 +98,14 @@ router.put('/:id/status', authenticateToken, requireAdmin, (req, res) => {
                   res.status(500).json({ message: 'Database error' });
                 });
                 return;
+              }
+              // Success response with campaign details
+              res.json({ 
+                message: 'Help request approved and campaign created successfully',
+                requestId: id,
+                campaignId: result.insertId,
+                status: 'approved'
+              });
               }
               res.json({ 
                 message: `Request ${status} successfully${status === 'approved' ? ' and campaign created' : ''}` 
