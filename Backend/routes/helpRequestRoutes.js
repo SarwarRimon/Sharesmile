@@ -42,15 +42,13 @@ router.post('/', authenticateToken, upload.single('document'), (req, res) => {
 
 // Get logged-in user's requests
 router.get('/my-requests', authenticateToken, (req, res) => {
-  const userId = req.user.id;
   const sql = `
     SELECT id, title, description, amount, document_path, status, created_at
     FROM help_requests
-    WHERE user_id = ?
     ORDER BY created_at DESC
   `;
 
-  db.query(sql, [userId], (err, results) => {
+  db.query(sql, [], (err, results) => {
     if (err) {
       console.error('Error fetching requests:', err);
       return res.status(500).json({ message: 'Database error' });
