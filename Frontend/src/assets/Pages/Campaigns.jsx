@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../Context/AuthContext";
 
 const Campaigns = () => {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setUserRole(user?.role);
+  }, []);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -20,7 +27,7 @@ const Campaigns = () => {
   }, []);
 
   const handleDonate = (campaign) => {
-    navigate(`/donation?campaign=${encodeURIComponent(campaign)}`);
+    navigate('/donation-form', { state: { campaign } });
   };
 
   return (
@@ -76,15 +83,21 @@ const Campaigns = () => {
                   </div>
                 )}
                 <div className="mt-auto">
-                  <button
-                    onClick={() => handleDonate(campaign.title)}
-                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
-                  >
-                    <span>Support this Cause</span>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </button>
+                  {userRole === 'donor' ? (
+                    <button
+                      onClick={() => handleDonate(campaign)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                      <span>Support this Cause</span>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <p className="text-center text-gray-600 text-sm">
+                      Please login as a donor to support this cause
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

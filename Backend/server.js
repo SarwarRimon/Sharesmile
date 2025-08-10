@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const authenticateToken = require('./middleware/authenticateToken');
 
 require('dotenv').config();
 const adminRoutes = require("./routes/adminRoutes");
@@ -24,17 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 
-// 🔐 Authentication Middleware
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(403).json({ message: 'Login first' });
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
-    req.user = user;
-    next();
-  });
-};
 
 // Routes
 app.use('/api', contactRoutes);
@@ -42,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes); // Admin routes with statistics
 app.use('/api/admin', require('./routes/helpRequestManagement')); // Help request management routes
 app.use('/api/campaigns', require('./routes/campaignRoutes')); // Campaign routes
+app.use('/api/donations', require('./routes/donationRoutes')); // Donation routes
 
 
 
@@ -90,35 +82,6 @@ app.delete('/api/user/delete/:field', authenticateToken, async (req, res) => {
   }
 });
 
-// 💰 Create Donation (Protected)
-app.post('/api/donations', authenticateToken, async (req, res) => {
-  const { amount, campaign, paymentMethod } = req.body;
-  const userId = req.user.id;
-
-  if (!amount || !campaign || !paymentMethod) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  if (amount <= 0) {
-    return res.status(400).json({ message: 'Amount must be greater than 0' });
-  }
-
-  try {
-    const [results] = await db.promise().query(
-      'INSERT INTO donations (user_id, amount, campaign_name, method) VALUES (?, ?, ?, ?)',
-      [userId, amount, campaign, paymentMethod]
-    );
-
-    if (results.affectedRows === 0) {
-      return res.status(500).json({ message: 'Donation failed' });
-    }
-
-    res.status(200).json({ message: 'Donation submitted successfully!' });
-  } catch (err) {
-    console.error('Donation error:', err);
-    res.status(500).json({ message: 'Server error while processing donation' });
-  }
-});
 
 // 👤 User Dashboard/Profile (Protected)
 app.get('/api/user/profile', authenticateToken, (req, res) => {

@@ -77,17 +77,7 @@ const Navbar = () => {
               </NavLink>
             )}
           </li>
-          <li>
-            <NavLink 
-              to="/donation" 
-              onClick={handleLinkClick}
-              className={({ isActive }) =>
-                isActive ? "block px-4 py-2 text-purple-600 font-semibold rounded-lg bg-purple-50" 
-                : "block px-4 py-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"}
-            >
-              Donate
-            </NavLink>
-          </li>
+
           <li>
             <NavLink 
               to="/contact" 

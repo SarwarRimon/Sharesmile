@@ -14,9 +14,24 @@ const DonationForm = () => {
     transactionId: ''
   });
 
+  // Redirect if not logged in or not a donor
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (!storedUser || storedUser.role !== 'donor') {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Check if we have campaign data
+  useEffect(() => {
+    if (!location.state || !campaign) {
+      navigate('/campaigns');
+    }
+  }, [location.state, campaign, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,72 +41,84 @@ const DonationForm = () => {
     }));
   };
 
-  // Check if we have campaign data
-  useEffect(() => {
-    if (!location.state || !campaign) {
-      navigate('/campaigns');
-    }
-  }, [location.state, campaign, navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
 
-    if (!campaign) {
-      setError('Campaign information is missing');
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.amount || formData.amount <= 0) {
-      setError('Please enter a valid amount');
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.paymentMethod) {
-      setError('Please select a payment method');
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.transactionId) {
-      setError('Please enter the transaction ID');
-      setLoading(false);
-      return;
-    }
-
     try {
-      // Debug logs
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const token = localStorage.getItem('token');
+
+      // Validate user authentication
+      if (!storedUser || !token) {
+        throw new Error('Please login to make a donation');
+      }
+
+      if (storedUser.role !== 'donor') {
+        throw new Error('Only donors can make donations');
+      }
+
+      // Validate campaign
+      if (!campaign || !campaign.id) {
+        throw new Error('Invalid campaign information');
+      }
+
+      // Validate form data
+      if (!formData.amount || parseFloat(formData.amount) <= 0) {
+        throw new Error('Please enter a valid amount');
+      }
+
+      if (!formData.paymentMethod) {
+        throw new Error('Please select a payment method');
+      }
+
+      if (!formData.transactionId) {
+        throw new Error('Please enter the transaction ID');
+      }
+
       const requestBody = {
-        campaignId: campaign.id,
+        campaign_id: campaign.id,
+        donor_id: storedUser.id,
         amount: parseFloat(formData.amount),
-        paymentMethod: formData.paymentMethod,
-        transactionId: formData.transactionId
+        payment_method: formData.paymentMethod,
+        transaction_id: formData.transactionId
       };
       
-      console.log('Campaign object:', campaign);
-      console.log('Form data:', formData);
-      console.log('Request body:', requestBody);
-
-      const response = await fetch('http://localhost:5000/api/donations', {
+      console.log('Making donation request:', requestBody);
+      const response = await fetch('http://localhost:5000/api/donations/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(requestBody)
       });
 
-      const data = await response.json();
-      
+      let data;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        throw new Error('Server returned an unexpected response');
+      }
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to process donation');
       }
 
-      setSuccess('Donation successful! Thank you for your support.');
+      console.log('Donation successful:', data);
+      
+      setSuccess('Thank you! Your donation has been recorded and is pending approval.');
+      setFormData({
+        amount: '',
+        paymentMethod: '',
+        transactionId: ''
+      });
+      
       setTimeout(() => {
         navigate('/campaigns');
       }, 2000);
@@ -107,29 +134,32 @@ const DonationForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Support {campaign.title}
-        </h2>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-md mx-auto bg-white rounded shadow-md p-6">
+        <h2 className="text-xl font-bold mb-4 text-center">Make a Donation</h2>
+        
+        {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
+        {success && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{success}</div>}
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="bg-gray-50 p-3 rounded">
+            <label className="text-sm font-medium text-gray-700">Campaign</label>
+            <div className="font-medium">{campaign?.title}</div>
+            {campaign?.image && (
+              <img 
+                src={campaign.image} 
+                alt={campaign.title} 
+                className="mt-2 w-full h-32 object-cover rounded"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/education.jpg';
+                }}
+              />
+            )}
           </div>
-        )}
 
-        {success && (
-          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
-            {success}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Amount (Tk)
-            </label>
+            <label className="text-sm font-medium text-gray-700">Amount (Tk)</label>
             <input
               type="number"
               name="amount"
@@ -137,20 +167,19 @@ const DonationForm = () => {
               min="1"
               value={formData.amount}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+              className="mt-1 w-full p-2 border rounded focus:ring-1 focus:ring-purple-500"
+              placeholder="Enter amount"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payment Method
-            </label>
+            <label className="text-sm font-medium text-gray-700">Payment Method</label>
             <select
               name="paymentMethod"
               required
               value={formData.paymentMethod}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+              className="mt-1 w-full p-2 border rounded focus:ring-1 focus:ring-purple-500"
             >
               <option value="">Select payment method</option>
               <option value="bKash">bKash</option>
@@ -158,37 +187,40 @@ const DonationForm = () => {
               <option value="Nagad">Nagad</option>
               <option value="Bank Transfer">Bank Transfer</option>
             </select>
+            {formData.paymentMethod && (
+              <p className="mt-1 text-sm text-gray-500">
+                Please enter the {formData.paymentMethod} transaction ID below
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Transaction ID
-            </label>
+            <label className="text-sm font-medium text-gray-700">Transaction ID</label>
             <input
               type="text"
               name="transactionId"
               required
               value={formData.transactionId}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-              placeholder="Enter your transaction ID"
+              className="mt-1 w-full p-2 border rounded focus:ring-1 focus:ring-purple-500"
+              placeholder="Enter transaction ID"
             />
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex gap-2 mt-4">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              className="flex-1 p-2 border rounded hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+              className="flex-1 p-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
             >
-              {loading ? 'Processing...' : 'Confirm Donation'}
+              {loading ? 'Processing...' : 'Confirm'}
             </button>
           </div>
         </form>

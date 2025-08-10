@@ -8,7 +8,7 @@ import Users from "./assets/Pages/Users";
 import Footer from "./assets/Components/Footer";
 import Home from "./assets/Pages/Home";
 import Campaigns from "./assets/Pages/Campaigns";
-import Donation from "./assets/Pages/Donation";
+import DonationForm from "./assets/Components/DonationForm";
 import Loginpage from "./assets/Pages/Loginpage";
 import Signup from "./assets/Pages/Signup";
 import ContactForm from "./assets/Components/ContactForm";
@@ -56,7 +56,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/campaigns" element={<Campaigns />} />
-            <Route path="/donation" element={<Donation />} />
+            <Route path="/donation-form" element={<DonationForm />} />
             <Route path="/contact" element={<ContactForm />} />
             <Route path="/login" element={<Loginpage />} />
             <Route path="/signup" element={<Signup />} />
